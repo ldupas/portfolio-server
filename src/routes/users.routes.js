@@ -48,6 +48,56 @@ router.post('/', (req, res) => {
         }
     }
 )
+});
+
+// Maintenant, je veux pouvoir modifier des infos 
+// concernant un produit 
+router.put('/:id', (req, res) => {
+    const userId = req.params.id;
+    const db = connection.promise();
+    let existingUser = null;
+
+    db.query('SELECT * FROM user WHERE id = ?', 
+    [userId])
+    .then(([results]) => {
+        existingUser = results[0];
+        if (!existingUser) return Promise.reject('User not found')
+        return db.query('UPDATE user SET ? WHERE id = ?', [req.body, userId]);
+    })
+    .then(() => {
+        res.status(200).json({...existingUser, ...req.body});
+    })
+    .catch((err) => {
+        console.log(err);
+        if (err === 'User not found')
+        res.status(404).send(`User with id ${userId} not found.`)
+        else {
+            res.status(500).send('Error updating user from database');
+        }
+    });
+});
+
+// Dernière étape d'un CRUD "basique", il faut pouvoir supprimer
+// une ligne de la DB (tuple, sous entendu un objet)
+router.delete('/:id', (req, res) => {
+    const userId = req.params.id;
+    connection.query(
+        'DELETE FROM user WHERE id = ?',
+        [userId],
+        (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send('Error while deleting a user');
+            }
+            else
+            {
+                // On va chercher la ligne affectée en question
+                // Si tout va, on renvoie donc un status 200 de suppression
+                if(result.affectedRows) res.status(200).send('🎉 User deleted')
+                else res.status(404).send('User not found!')
+            }
+        }
+    )
 })
 
 module.exports = router;
