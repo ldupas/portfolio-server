@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) =>  {
     const projectId = req.params.id;
-    connection.query('SELECT * FROM user WHERE id=?', 
+    connection.query('SELECT * FROM project WHERE id=?', 
     [projectId], 
     (err, results) => {
         if(err) {
@@ -43,6 +43,50 @@ router.post('/', (req, res) => {
         }
     }
 )
+});
+
+router.put('/:id', (req, res) => {
+    const projectId = req.params.id;
+    const db = connection.promise();
+    let existingProject = null;
+
+    db.query('SELECT * FROM project WHERE id = ?', 
+    [projectId])
+    .then(([results]) => {
+        existingProject = results[0];
+        if (!existingProject) return Promise.reject('Project not found')
+        return db.query('UPDATE project SET ? WHERE id = ?', [req.body, projectId]);
+    })
+    .then(() => {
+        res.status(200).json({...existingProject, ...req.body});
+    })
+    .catch((err) => {
+        console.log(err);
+        if (err === 'Project not found')
+        res.status(404).send(`Project with id ${projectId} not found.`)
+        else {
+            res.status(500).send('Error updating user from database');
+        }
+    });
+});
+
+router.delete('/:id', (req, res) => {
+    const projectId = req.params.id;
+    connection.query(
+        'DELETE FROM project WHERE id = ?',
+        [projectId],
+        (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send('Error while deleting a project');
+            }
+            else
+            {
+                if(result.affectedRows) res.status(200).send('🎉 Project deleted')
+                else res.status(404).send('Project not found!')
+            }
+        }
+    )
 });
 
 
