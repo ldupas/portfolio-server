@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
             res.json(result);
         }
     })
-})
+});
 
 router.get('/:id', (req, res) =>  {
     const userId = req.params.id;
@@ -98,6 +98,6 @@ router.delete('/:id', (req, res) => {
             }
         }
     )
-})
+});
 
 module.exports = router;
