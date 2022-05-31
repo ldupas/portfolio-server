@@ -25,8 +25,6 @@ app.get("/", (req,res) => {
     res.send("Welcome on my portfolio API");
 })
 
-
-
 app.listen(port, () => {
     console.log(`Server is listenning on port ${port}`);
 })
