@@ -1,4 +1,3 @@
-const { append } = require("express/lib/response");
 const connection = require("../db-config");
 const router = require("express").Router();
 
