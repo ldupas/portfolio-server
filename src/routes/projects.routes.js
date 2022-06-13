@@ -7,20 +7,20 @@ const { findAll, insertProject } = require('../models/project');
 // cela va créer automatiquement un dossier projects dans le dossier uploads
 const upload = multer({ dest: 'uploads/projects/'})
 
-// router.get('/', (req, res) => {
-//     connection.query("SELECT * FROM project", (err, result) => {
-//         if(err) {
-//             res.status(500).send("Error retrieving projects from database");
-//         } else {
-//             res.json(result);
-//         }
-//     })
-// });
+router.get('/', (req, res) => {
+    connection.query("SELECT * FROM project", (err, result) => {
+        if(err) {
+            res.status(500).send("Error retrieving projects from database");
+        } else {
+            res.json(result);
+        }
+    })
+});
 
-router.get('/', async (req, res) => {
-    const [projects] = await findAll();
-    res.json[projects];
-})
+// router.get('/', async (req, res) => {
+//     const [projects] = await findAll();
+//     res.json[projects];
+// })
 
 router.get('/:id', (req, res) =>  {
     const projectId = req.params.id;

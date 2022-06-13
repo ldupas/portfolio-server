@@ -22,11 +22,11 @@ CREATE TABLE `project` (
     `name` varchar(255)  NOT NULL ,
     `description` TEXT  NOT NULL ,
     `picture` varchar(255)  NOT NULL ,
-    `date` DATE  NOT NULL ,
-    `repo_front` varchar(255)  NOT NULL ,
-    `repo_back` varchar(255)  NOT NULL ,
-    `deploy_url` varchar(255)  NOT NULL ,
-    `category_id` int  NOT NULL ,
+    `date` DATE,
+    `repo_front` varchar(255),
+    `repo_back` varchar(255),
+    `deploy_url` varchar(255),
+    `category_id` int,
     PRIMARY KEY (
         `id`
     )
