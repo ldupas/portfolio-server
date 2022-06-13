@@ -97,7 +97,7 @@ router.post('/login', async (req, res) => {
     // Lorsque je me connecte, je veux attacher un token à mon user
     const jwtKey = generateJwt(value.email);
     return res.json({
-        credentials: jwtKey,
+       credentials: jwtKey
     })
 });
 
