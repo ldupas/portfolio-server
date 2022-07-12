@@ -73,29 +73,50 @@ router.post('/', upload.single('picture'), async(req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-    const projectId = req.params.id;
-    const db = connection.promise();
-    let existingProject = null;
-
-    db.query('SELECT * FROM project WHERE id = ?', 
-    [projectId])
-    .then(([results]) => {
-        existingProject = results[0];
-        if (!existingProject) return Promise.reject('Project not found')
-        return db.query('UPDATE project SET ? WHERE id = ?', [req.body, projectId]);
-    })
-    .then(() => {
-        res.status(200).json({...existingProject, ...req.body});
-    })
-    .catch((err) => {
-        console.log(err);
-        if (err === 'Project not found')
-        res.status(404).send(`Project with id ${projectId} not found.`)
-        else {
-            res.status(500).send('Error updating user from database');
+    connection.query(
+      'UPDATE project SET ? WHERE id = ?',
+      [req.body, req.params.id],
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          res.status(500).send('Error updating a project');
+        } else {
+          if (result.affectedRows) {
+            const updatedProject = {
+              id: req.params.id,
+              name: req.body.name
+            };
+            res.status(200).json(updatedProject);
+          } else res.status(404).send('Project not found.');
         }
-    });
-});
+      }
+    );
+  });
+
+// router.put('/:id', (req, res) => {
+//     const projectId = parseInt(req.params.id);
+//     const db = connection.promise();
+//     let existingProject = null;
+
+//     db.query('SELECT * FROM project WHERE id = ?', 
+//     [projectId])
+//     .then(([results]) => {
+//         existingProject = results[0];
+//         if (!existingProject) return Promise.reject('Project not found')
+//         return db.query('UPDATE project SET ? WHERE id=?', [req.body, projectId]);
+//     })
+//     .then(() => {
+//         res.status(200).json({...existingProject, ...req.body});
+//     })
+//     .catch((err) => {
+//         console.log(err);
+//         if (err === 'Project not found')
+//         res.status(404).send(`Project with id ${projectId} not found.`)
+//         else {
+//             res.status(500).send('Error updating project from database');
+//         }
+//     });
+// });
 
 router.delete('/:id', (req, res) => {
     const projectId = req.params.id;

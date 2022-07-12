@@ -19,7 +19,7 @@ router.get('/', checkJwt, (req, res) => {
         if(err) {
             res.status(500).send("Error retrieving users from database");
         } else {
-            res.json(result);
+            res.json(result, {message: "YES"});
         }
     })
 });
@@ -64,7 +64,7 @@ router.post('/', async (req, res) => {
     //     credentials: jwtKey,
     // })
 
-    return res.json({
+    return res.status(201).json({
         message: "L'utilisateur a bien été créé."
     });
 });
